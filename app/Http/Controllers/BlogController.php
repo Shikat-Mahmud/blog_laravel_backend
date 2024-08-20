@@ -8,6 +8,14 @@ use Illuminate\Support\Facades\Validator;
 
 class BlogController extends Controller
 {
+    public function index() {
+        $blogs = Blog::orderBy('created_at', 'DESC')->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => $blogs
+        ]);
+    }
     public function store(Request $request)
     {
         try {

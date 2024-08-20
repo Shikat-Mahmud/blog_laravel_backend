@@ -72,6 +72,8 @@ class BlogController extends Controller
     public function show($id) {
         $blog = Blog::findOrFail($id);
 
+        $blog['date'] = \Carbon\Carbon::parse($blog->created_at)->format('d M Y');
+
         if($blog){
             return response()->json([
                 "status" => true,

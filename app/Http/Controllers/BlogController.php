@@ -87,4 +87,64 @@ class BlogController extends Controller
         }
 
     }
+
+    public function update($id, Request $request)
+    {
+        try {
+            $blog = Blog::find($id);
+
+            if ($blog == null) {
+                return response()->json([
+                    "status" => false,
+                    "message" => "The blog is not found."
+                ]);
+            }
+
+            $validator = Validator::make($request->all(), [
+                'title' => 'required|min:10',
+                'image' => 'nullable|image',
+                'author' => 'required|min:3'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'false',
+                    'message' => 'fix the errors.',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $blog->title = $request->title;
+            $blog->author = $request->author;
+            $blog->shortDesc = $request->shortDesc;
+            $blog->description = $request->description;
+
+            if ($request->hasFile('image')) {
+                $image = $request->image;
+                $extension = $image->getClientOriginalExtension();
+                $imageName = 'blog' . time() . '.' . $extension;
+                $blog->image = $imageName;
+    
+                // Save image
+                $image->move(public_path('img'), $imageName);
+            }
+
+            $blog->save();
+
+            return response()->json([
+                'status' => 'true',
+                'message' => 'Blog updated successfully.',
+                'data' => $blog
+            ]);
+        } catch (\Exception $e) {
+            // Log the exception message
+            \Log::error("Error in store method: " . $e->getMessage());
+
+            // Return a JSON response with the error
+            return response()->json([
+                'status' => 'false',
+                'message' => 'An unexpected error occurred.',
+            ], 500);
+        }
+    }
 }

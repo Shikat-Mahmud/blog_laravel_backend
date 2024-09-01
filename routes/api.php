@@ -11,3 +11,4 @@ Route::get('/user', function (Request $request) {
 Route::get('blogs', [BlogController::class, 'index']);
 Route::post('blog', [BlogController::class, 'store']);
 Route::get('blog/{id}', [BlogController::class, 'show']);
+Route::put('blog/{id}', [BlogController::class, 'update']);

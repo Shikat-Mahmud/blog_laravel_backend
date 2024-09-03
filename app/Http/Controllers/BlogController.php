@@ -90,6 +90,7 @@ class BlogController extends Controller
 
     public function update($id, Request $request)
     {
+        \Log::info('Update route accessed with ID:', ['id' => $id]);
         try {
             $blog = Blog::find($id);
 
@@ -107,6 +108,7 @@ class BlogController extends Controller
             ]);
 
             if ($validator->fails()) {
+                \Log::error('Validation errors:', $validator->errors()->toArray());
                 return response()->json([
                     'status' => 'false',
                     'message' => 'fix the errors.',

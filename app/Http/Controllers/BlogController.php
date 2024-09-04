@@ -90,7 +90,6 @@ class BlogController extends Controller
 
     public function update($id, Request $request)
     {
-        \Log::info('Update route accessed with ID:', ['id' => $id]);
         try {
             $blog = Blog::find($id);
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Blog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 
 class BlogController extends Controller
@@ -147,5 +148,27 @@ class BlogController extends Controller
                 'message' => 'An unexpected error occurred.',
             ], 500);
         }
+    }
+
+    public function destroy($id) {
+        $blog = Blog::find($id);
+
+        if($blog == null){
+            return response()->json([
+                "status" => false,
+                "message" => "The blog is not found."
+            ]);
+        }
+
+        // Delete blog image first
+        File::delete(public_path('img/'.$blog->image));
+
+        // Delete blog from db
+        $blog->delete();
+        
+        return response()->json([
+            'status' => 'true',
+            'message' => 'Blog deleted successfully.'
+        ]);
     }
 }
